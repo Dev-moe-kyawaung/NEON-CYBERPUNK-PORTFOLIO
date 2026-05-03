@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moe Kyaw Aung | Cyber Android Dev | မိုးကျော်အောင်</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #00ff88;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Matrix Rain Background */
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        
+        /* Neon Glow Effects */
+        .neon-glow {
+            text-shadow: 
+                0 0 5px #00ff88, 0 0 10px #00ff88, 0 0 20px #00ff88,
+                0 0 40px #00ff88, 0 0 80px #00ff88, 0 0 90px #00ff88;
+        }
+        .neon-purple {
+            text-shadow: 
+                0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff,
+                0 0 40px #ff00ff, 0 0 80px #ff00ff;
+        }
+        .neon-blue { 
+            text-shadow: 
+                0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff,
+                0 0 40px #00bfff;
+        }
+        
+        /* Terminal Style */
+        .terminal {
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #00ff88;
+            box-shadow: 
+                0 0 20px #00ff88, inset 0 0 20px rgba(0,255,136,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .terminal::before {
+            content: 'C:\Users\MoeKyawAung\Portfolio>';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        .nav-link {
+            color: #00ff88 !important;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, #ff00ff);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        .hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ff88, #ff00ff, #00bfff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, glitch 2s infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        
+        .skill-bar {
+            background: rgba(0,255,136,0.2);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #ff00ff);
+            border-radius: 5px;
+            width: 0;
+            box-shadow: 0 0 20px #00ff88;
+            animation: loadSkill 2s ease-out forwards;
+        }
+        @keyframes loadSkill { to { width: attr(data-width); } }
+        
+        .project-card {
+            border: 1px solid #00ff88;
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            border-color: #ff00ff;
+            box-shadow: 0 0 50px #ff00ff;
+            transform: scale(1.05);
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top p-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold neon-glow fs-3" href="#home">
+                <i class="fas fa-terminal me-2"></i>MOE KYAW AUNG
+            </a>
+            <button class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon" style="filter: hue-rotate(120deg);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item mx-3"><a class="nav-link" href="#home">HOME</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#about">ABOUT</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#skills">SKILLS</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#projects">PROJECTS</a></li>
+                    <li class="nav-item mx-3"><a class="nav-link" href="#contact">CONTACT</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section id="home" class="min-vh-100 d-flex align-items-center pt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="hero-title mb-4">ANDROID DEVELOPER</h1>
+                    <div class="h3 mb-5 fs-1 neon-glow">
+                        <span id="cyber-typed"></span>
+                        <span class="ml-3">_</span>
+                    </div>
+                    <div>
+                        <a href="#projects" class="btn btn-success btn-lg px-5 py-3 me-3 neon-glow fs-6 fw-bold">
+                            <i class="fab fa-github me-2"></i>VIEW CODE
+                        </a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg px-5 py-3 neon-purple fs-6 fw-bold">
+                            HIRE ME
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center">
+                    <div class="terminal rounded-4 p-5 position-relative" style="max-width: 400px; margin: 0 auto;">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <small>LOCATION</small>
+                                <div class="h6 mb-0 neon-glow">Tachileik, Myanmar</div>
+                            </div>
+                            <div class="col-6">
+                                <small>DOB</small>
+                                <div class="h6 mb-0 neon-blue">05.07.2000</div>
+                            </div>
+                            <div class="col-12">
+                                <small>EMAIL</small>
+                                <div class="h6 mb-0">moekyawaung@engineer.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="py-5">
+        <div class="container">
+            <h2 class="text-center neon-glow mb-5 fs-1">CORE COMPETENCIES</h2>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="text-center p-4">
+                        <i class="fab fa-android fa-4x neon-glow mb-4 d-block"></i>
+                        <h4 class="neon-purple mb-3">Kotlin / Android</h4>
+                        <div class="skill-bar mx-auto" style="width: 200px;">
+                            <div class="skill-progress" data-width="95%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more skills similarly -->
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.umd.js"></script>
+    <script>
+        // Matrix Rain
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0,0,0,0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff88';
+            ctx.font = `${fontSize}px monospace`;
+            
+            drops.forEach((y, i) => {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 50);
+        
+        // Typing Effect
+        new Typed('#cyber-typed', {
+            strings: ['Android Developer', 'Full Stack Engineer', 'Kotlin Master', 'မိုဘိုင်းအက်ပ်တီဗလပ်ပါ'],
+            typeSpeed: 60,
+            backSpeed: 30,
+            loop: true,
+            backDelay: 1500
+        });
+        
+        // Smooth Scroll & Animations
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(anchor.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
+
