@@ -8,56 +8,53 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
-        
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
             color: #00ff88;
             font-family: 'Rajdhani', sans-serif;
             overflow-x: hidden;
-            position: relative;
         }
-        
+
         /* Matrix Rain Background */
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
-        
+        #matrix { position: fixed; top: 0; left: 0; z-index: -1; }
+
         /* Neon Glow Effects */
         .neon-glow {
-            text-shadow: 
+            text-shadow:
                 0 0 5px #00ff88, 0 0 10px #00ff88, 0 0 20px #00ff88,
                 0 0 40px #00ff88, 0 0 80px #00ff88, 0 0 90px #00ff88;
         }
         .neon-purple {
-            text-shadow: 
+            text-shadow:
                 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff,
                 0 0 40px #ff00ff, 0 0 80px #ff00ff;
         }
-        .neon-blue { 
-            text-shadow: 
+        .neon-blue {
+            text-shadow:
                 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff,
                 0 0 40px #00bfff;
         }
-        
+
         /* Terminal Style */
         .terminal {
             background: rgba(0,0,0,0.9);
             border: 1px solid #00ff88;
-            box-shadow: 
-                0 0 20px #00ff88, inset 0 0 20px rgba(0,255,136,0.1);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 0 20px #00ff88, inset 0 0 20px rgba(0,255,136,0.1);
+            max-width: 400px;
+            margin: 0 auto;
         }
-        .terminal::before {
-            content: 'C:\Users\MoeKyawAung\Portfolio>';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .terminal-prompt {
             color: #00ff88;
             font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
             animation: blink 1s infinite;
+            margin-bottom: 1rem;
+            display: block;
         }
         @keyframes blink { 50% { opacity: 0; } }
-        
+
         .nav-link {
             color: #00ff88 !important;
             font-weight: 600;
@@ -75,7 +72,11 @@
             transition: width 0.3s ease;
         }
         .nav-link:hover::after { width: 100%; }
-        
+
+        .navbar-toggler-icon {
+            filter: hue-rotate(120deg);
+        }
+
         .hero-title {
             font-family: 'Orbitron', monospace;
             font-size: clamp(3rem, 8vw, 6rem);
@@ -84,6 +85,8 @@
             background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
             animation: gradientShift 3s ease infinite, glitch 2s infinite;
         }
         @keyframes gradientShift {
@@ -97,13 +100,14 @@
             60% { transform: translate(2px, 2px); }
             80% { transform: translate(2px, -2px); }
         }
-        
+
         .skill-bar {
             background: rgba(0,255,136,0.2);
             height: 10px;
             border-radius: 5px;
             overflow: hidden;
-            position: relative;
+            width: 200px;
+            margin: 0 auto;
         }
         .skill-progress {
             height: 100%;
@@ -111,10 +115,9 @@
             border-radius: 5px;
             width: 0;
             box-shadow: 0 0 20px #00ff88;
-            animation: loadSkill 2s ease-out forwards;
+            transition: width 2s ease-out;
         }
-        @keyframes loadSkill { to { width: attr(data-width); } }
-        
+
         .project-card {
             border: 1px solid #00ff88;
             transition: all 0.3s ease;
@@ -124,31 +127,19 @@
             box-shadow: 0 0 50px #ff00ff;
             transform: scale(1.05);
         }
-        
-        .matrix-char {
-            position: absolute;
-            color: #00ff88;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            animation: fall linear infinite;
-            opacity: 0.8;
-        }
-        @keyframes fall {
-            to { transform: translateY(100vh); }
-        }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-    
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top p-3">
         <div class="container">
             <a class="navbar-brand fw-bold neon-glow fs-3" href="#home">
                 <i class="fas fa-terminal me-2"></i>MOE KYAW AUNG
             </a>
-            <button class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#nav">
-                <span class="navbar-toggler-icon" style="filter: hue-rotate(120deg);"></span>
+            <button class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="nav">
                 <ul class="navbar-nav ms-auto">
@@ -170,7 +161,7 @@
                     <h1 class="hero-title mb-4">ANDROID DEVELOPER</h1>
                     <div class="h3 mb-5 fs-1 neon-glow">
                         <span id="cyber-typed"></span>
-                        <span class="ml-3">_</span>
+                        <span class="ms-3">_</span>
                     </div>
                     <div>
                         <a href="#projects" class="btn btn-success btn-lg px-5 py-3 me-3 neon-glow fs-6 fw-bold">
@@ -182,7 +173,8 @@
                     </div>
                 </div>
                 <div class="col-lg-5 text-center">
-                    <div class="terminal rounded-4 p-5 position-relative" style="max-width: 400px; margin: 0 auto;">
+                    <div class="terminal rounded-4 p-5">
+                        <span class="terminal-prompt">C:\Users\MoeKyawAung\Portfolio&gt;</span>
                         <div class="row g-3">
                             <div class="col-6">
                                 <small>LOCATION</small>
@@ -212,7 +204,7 @@
                     <div class="text-center p-4">
                         <i class="fab fa-android fa-4x neon-glow mb-4 d-block"></i>
                         <h4 class="neon-purple mb-3">Kotlin / Android</h4>
-                        <div class="skill-bar mx-auto" style="width: 200px;">
+                        <div class="skill-bar">
                             <div class="skill-progress" data-width="95%"></div>
                         </div>
                     </div>
@@ -228,29 +220,50 @@
         // Matrix Rain
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
-        
-        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-        
+
+        const FONT_SIZE = 14;
+        const MATRIX_CHARS = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
+
+        let drops = [];
+
+        function resizeCanvas() {
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+            drops = Array(Math.floor(canvas.width / FONT_SIZE)).fill(1);
+        }
+
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0,0,0,0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#00ff88';
-            ctx.font = `${fontSize}px monospace`;
-            
+            ctx.font = `${FONT_SIZE}px monospace`;
+
             drops.forEach((y, i) => {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, y * fontSize);
-                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+                ctx.fillText(char, i * FONT_SIZE, y * FONT_SIZE);
+                if (y * FONT_SIZE > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             });
+
+            requestAnimationFrame(drawMatrix);
         }
-        setInterval(drawMatrix, 50);
-        
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        requestAnimationFrame(drawMatrix);
+
+        // Animate skill bars once they enter the viewport
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.dataset.width;
+                    skillObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.skill-progress').forEach(bar => skillObserver.observe(bar));
+
         // Typing Effect
         new Typed('#cyber-typed', {
             strings: ['Android Developer', 'Full Stack Engineer', 'Kotlin Master', 'မိုဘိုင်းအက်ပ်တီဗလပ်ပါ'],
@@ -259,15 +272,14 @@
             loop: true,
             backDelay: 1500
         });
-        
-        // Smooth Scroll & Animations
+
+        // Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', e => {
                 e.preventDefault();
-                document.querySelector(anchor.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                document.querySelector(anchor.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
             });
         });
     </script>
 </body>
 </html>
-
